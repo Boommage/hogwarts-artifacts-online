@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -43,7 +45,7 @@ class ArtifactServiceTest {
     //Test Method - A method with a test annotation
     @Test
     void testFindByIdSuccess() {
-        //Given. Arrange inputs and targets. Define the behavior of Mock obj artifactRepo
+        //1. Given. Arrange inputs and targets. Define the behavior of Mock obj artifactRepo
         /*
           "id": "1250808601744904192",
           "name": "Invisibility Cloak",
@@ -65,10 +67,10 @@ class ArtifactServiceTest {
         //when the findById method of repo gets called w/ this specific id - a will be returned
         given(artifactRepository.findById("1250808601744904192")).willReturn(Optional.of(a)); //Defines the behavior of the mock obj
 
-        //When. Act on the target behavior. When steps should cover the method to be tested.
+        //2. When. Act on the target behavior. When steps should cover the method to be tested.
         Artifact returnedArtifact =  artifactService.findById("1250808601744904192");
 
-        //Then. Assert expected outcomes.
+        //3. Then. Assert expected outcomes.
         assertThat(returnedArtifact.getId()).isEqualTo(a.getId());
         assertThat(returnedArtifact.getName()).isEqualTo(a.getName());
         assertThat(returnedArtifact.getDescription()).isEqualTo(a.getDescription());
@@ -77,4 +79,24 @@ class ArtifactServiceTest {
         //verify that this mock objs method is called exactly once inside the service obj
         verify(artifactRepository, times(1)).findById("1250808601744904192");
     }
+
+    @Test
+    void testFindByIdNotFound() {
+        //1. Given
+        //if an invalid id is passed - return an empty obj
+        given(artifactRepository.findById(Mockito.any(String.class))).willReturn(Optional.empty());
+
+        //2. When
+        //if artifact service throws an execption - catch it and assign it to a thrown var
+        Throwable thrown = catchThrowable(() -> {
+            Artifact returnedArtifact =  artifactService.findById("1250808601744904192");
+        });
+
+        //3. Then
+        assertThat(thrown)
+                .isInstanceOf(ArtifactNotFoundException.class)
+                .hasMessage("Could not find artifact with Id: 1250808601744904192 :(");
+    }
+
+
 }

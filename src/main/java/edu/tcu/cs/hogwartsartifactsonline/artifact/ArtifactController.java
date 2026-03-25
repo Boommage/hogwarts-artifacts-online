@@ -1,6 +1,7 @@
 package edu.tcu.cs.hogwartsartifactsonline.artifact;
 
 import edu.tcu.cs.hogwartsartifactsonline.system.Result;
+import edu.tcu.cs.hogwartsartifactsonline.system.StatusCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,8 @@ public class ArtifactController {
     //for each rest API endpoint we need to create a handler method - to process requests and return a response
     //@PathVariable - Automatically retrieve the url "artifactId" and bind it to the parameter of the same name
     public Result findArtifactById(@PathVariable String artifactId) {
-        return null;
+        Artifact foundArtifact = this.artifactService.findById(artifactId);
+        //Spring Mvc auto turns this obj into a JSON obj
+        return new Result(true, StatusCode.SUCCESS, "Find One Success", foundArtifact);
     }
 }
