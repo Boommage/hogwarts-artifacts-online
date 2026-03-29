@@ -18,14 +18,8 @@ public class Wizard implements Serializable {
 
     private String name;
 
-    //There needs to be a one-to-many on the other side of a many-to-one
-    //For one-to-many you need to pass  - mappedBy = "name"
-    //the one side(i.e. the wizard table) gives up responsibility of maintaining the foreign key
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "owner")
-    //To implement one-to-one - artifacts references an owner wizard
-    //wizard has access to known artifacts
 
-    //set to a new ArrayList so by default it is created as an empty list
     private List<Artifact> artifacts = new ArrayList<>();
 
     public Wizard() {
@@ -64,3 +58,4 @@ public class Wizard implements Serializable {
         return this.artifacts.size();
     }
 }
+
