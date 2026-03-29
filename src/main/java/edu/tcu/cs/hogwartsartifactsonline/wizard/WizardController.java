@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/wizards") //Used if mapping annotations all use the same url
+@RequestMapping("${api.endpoint.base-url}/wizards") //Used if mapping annotations all use the same url
 public class WizardController {
 
     private final WizardService wizardService;
