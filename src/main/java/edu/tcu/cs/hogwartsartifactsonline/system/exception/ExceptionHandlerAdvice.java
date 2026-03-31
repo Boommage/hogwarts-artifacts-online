@@ -3,6 +3,8 @@ package edu.tcu.cs.hogwartsartifactsonline.system.exception;
 import edu.tcu.cs.hogwartsartifactsonline.system.Result;
 import edu.tcu.cs.hogwartsartifactsonline.system.StatusCode;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,5 +42,12 @@ public class ExceptionHandlerAdvice {
             map.put(key, val);
         });
         return new Result(false, StatusCode.INVALID_ARGUMENT, "Provided arguments are invalid, see data for details.", map);
+    }
+
+    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class}) //Tells spring that this method is an exception handler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED) //this unauthorized actually mean unauthenticated lol
+    //401 is for missing or bad authentication - 403 is for after the user is authenticated but not authorized to perform a certain request
+    Result handleAuthenticationException(Exception ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED, "username or password is incorrect");
     }
 }
