@@ -25,8 +25,10 @@ public class AuthService {
     public Map<String, Object> createLoginInfo(Authentication authentication) {
         //Create User Info
         MyUserPrincipal principal = (MyUserPrincipal)authentication.getPrincipal();
+        assert principal != null;
         HogwartsUser hogwartsUser = principal.getHogwartsUser();
         UserDto userDto = this.userToUserDtoConverter.convert(hogwartsUser);
+
 
         //Create a JWT
         String token = this.jwtProvider.createToken(authentication);

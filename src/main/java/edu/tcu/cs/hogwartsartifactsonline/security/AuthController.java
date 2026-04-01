@@ -24,6 +24,7 @@ public class AuthController {
     @PostMapping("/login")
     //Returns basic user login info
     public Result getLoginInfo(Authentication authentication) {
+        System.out.println("TEST");
         LOGGER.debug("Authenticated user: '{}'", authentication.getName());
         return new Result(true, StatusCode.SUCCESS, "User info and JSON Web Token", this.authService.createLoginInfo(authentication));
     }
