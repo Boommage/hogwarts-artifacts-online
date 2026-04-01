@@ -73,6 +73,7 @@ public class SecurityConfiguration {
                 )
                 .headers(headers -> headers.frameOptions(Customizer.withDefaults())) //for h2 browser console access
                 .csrf(csrf -> csrf.disable()) //cross site request forgery -
+                .cors(Customizer.withDefaults()) //1. Create a CORS clka    
                 .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(this.customBasicAuthenticationEntryPoint))
                 .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
                 .jwt(Customizer.withDefaults())
