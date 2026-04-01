@@ -29,9 +29,10 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 
+
 @SpringBootTest(properties = "api.endpoint.base-url=/api/v1")
 //Once we start the test case - auto inject mockMvc
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 class ArtifactControllerTest {
 
     @Autowired

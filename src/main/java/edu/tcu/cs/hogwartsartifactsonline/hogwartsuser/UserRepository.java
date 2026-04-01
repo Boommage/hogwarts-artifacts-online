@@ -8,4 +8,10 @@ public interface UserRepository extends JpaRepository<HogwartsUser, Integer> {
 
     Optional<HogwartsUser> findByUsername(String username);
 
+    //derived queuey methods
+
+    //Optional<HogwartsUser> findByEnabled(boolean enabled);
+
+    //Optional<HogwartsUser> findByUsernameAndPassword(String username, String password);
+
 }

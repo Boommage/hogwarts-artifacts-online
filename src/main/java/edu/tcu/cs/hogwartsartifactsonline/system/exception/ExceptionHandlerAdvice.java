@@ -3,6 +3,12 @@ package edu.tcu.cs.hogwartsartifactsonline.system.exception;
 import edu.tcu.cs.hogwartsartifactsonline.system.Result;
 import edu.tcu.cs.hogwartsartifactsonline.system.StatusCode;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,5 +46,49 @@ public class ExceptionHandlerAdvice {
             map.put(key, val);
         });
         return new Result(false, StatusCode.INVALID_ARGUMENT, "Provided arguments are invalid, see data for details.", map);
+    }
+
+    //Spring Security Exceptions are thrown before the controllers start to work
+
+    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class}) //Tells spring that this method is an exception handler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED) //this unauthorized actually mean unauthenticated lol
+    //401 is for missing or bad authentication - 403 is for after the user is authenticated but not authorized to perform a certain request
+    Result handleAuthenticationException(Exception ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED, "username or password is incorrect", ex.getMessage());
+    }
+
+    @ExceptionHandler(InsufficientAuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    Result handleInsufficientAuthenticationException(InsufficientAuthenticationException ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED, "Login credentials are missing.", ex.getMessage());
+    }
+
+    @ExceptionHandler(AccountStatusException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    Result handleAccountStatusException(AccountStatusException ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED, "User account is abnormal.", ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidBearerTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    Result handleInvalidBearerTokenException(InvalidBearerTokenException ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED, "The access token provided is expired. revoked, malformed, or invalid for other reasons.", ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    Result handleAccessDeniedException(InvalidBearerTokenException ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED, "No permission", ex.getMessage());
+    }
+
+    /**
+     *Fallback handles any unhandled exceptions.
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    Result handleOtherException(Exception ex) {
+        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs.", ex.getMessage());
     }
 }
