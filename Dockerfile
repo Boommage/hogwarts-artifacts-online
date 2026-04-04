@@ -16,5 +16,3 @@ COPY --from=builder application/snapshot-dependencies/ ./
 COPY --from=builder application/application/ ./
 # Tells Docker to run the jar launcher class when the container starts
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
-
-EXPOSE 8080
