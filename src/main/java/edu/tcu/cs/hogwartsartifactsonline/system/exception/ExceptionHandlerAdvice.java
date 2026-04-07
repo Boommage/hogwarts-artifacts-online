@@ -57,6 +57,7 @@ public class ExceptionHandlerAdvice {
         return new Result(false, StatusCode.UNAUTHORIZED, "username or password is incorrect", ex.getMessage());
     }
 
+    //I handled this previously in another video - I thought this was the hw mentioned...
     @ExceptionHandler(InsufficientAuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     Result handleInsufficientAuthenticationException(InsufficientAuthenticationException ex) {
